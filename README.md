@@ -5,7 +5,6 @@
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Scikit-learn](https://img.shields.io/badge/Scikit--learn-1.0+-orange.svg)
 ![Pandas](https://img.shields.io/badge/Pandas-1.3+-green.svg)
-![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 **An Intelligent Systems Project for Predicting Country Happiness Scores**
 
@@ -270,3 +269,4 @@ This project is for educational purposes as part of the AI course curriculum.
 *Student ID: 201801343*
 
 </div>
+

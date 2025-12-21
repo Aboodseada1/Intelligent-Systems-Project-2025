@@ -54,10 +54,7 @@ from sklearn.impute import KNNImputer
 from sklearn.metrics import (
     mean_squared_error, 
     mean_absolute_error,
-    r2_score,
-    confusion_matrix, 
-    ConfusionMatrixDisplay, 
-    classification_report
+    r2_score
 )
 
 # Suppress warnings for cleaner output
@@ -100,9 +97,7 @@ class Config:
         'Generosity'
     ]
     
-    # Happiness classification thresholds
-    LOW_THRESHOLD = 4.5
-    MEDIUM_THRESHOLD = 6.0
+
 
 
 # ============================================================================
@@ -524,63 +519,7 @@ def evaluate_model(model: LinearRegression, X_train: pd.DataFrame, y_train: pd.S
     return y_pred, metrics
 
 
-def classify_happiness(score: float) -> str:
-    """
-    Classify happiness score into categories.
-    
-    Args:
-        score: Happiness score value
-        
-    Returns:
-        Category string ('Low', 'Medium', or 'High')
-    """
-    if score < Config.LOW_THRESHOLD:
-        return 'Low'
-    elif score < Config.MEDIUM_THRESHOLD:
-        return 'Medium'
-    else:
-        return 'High'
 
-
-def generate_classification_report(y_test: pd.Series, y_pred: np.ndarray) -> None:
-    """
-    Generate classification report and confusion matrix.
-    
-    This treats the regression problem as a classification task
-    by binning scores into Low/Medium/High categories.
-    
-    Args:
-        y_test: Actual happiness scores
-        y_pred: Predicted happiness scores
-    """
-    print("\n" + "="*60)
-    print("  STEP 7: CLASSIFICATION ANALYSIS")
-    print("="*60)
-    
-    # Convert to categories
-    y_test_class = y_test.apply(classify_happiness)
-    y_pred_class = pd.Series(y_pred).apply(classify_happiness)
-    
-    labels = ['Low', 'Medium', 'High']
-    
-    print("\n🏷️  Happiness Score Categories:")
-    print(f"   • Low: < {Config.LOW_THRESHOLD}")
-    print(f"   • Medium: {Config.LOW_THRESHOLD} - {Config.MEDIUM_THRESHOLD}")
-    print(f"   • High: > {Config.MEDIUM_THRESHOLD}")
-    
-    print("\n📋 Classification Report:")
-    print("-"*50)
-    print(classification_report(y_test_class, y_pred_class, labels=labels, zero_division=0))
-    
-    # Create confusion matrix
-    cm = confusion_matrix(y_test_class, y_pred_class, labels=labels)
-    
-    plt.figure(figsize=(8, 6))
-    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=labels)
-    disp.plot(cmap='Blues', values_format='d', ax=plt.gca())
-    plt.title('Confusion Matrix (Happiness Categories)', fontsize=14, fontweight='bold')
-    plt.tight_layout()
-    plt.show()
 
 
 # ============================================================================
@@ -630,12 +569,10 @@ def interactive_prediction(model: LinearRegression, feature_names: List[str]) ->
             
             # Make prediction
             prediction = model.predict(input_data)[0]
-            category = classify_happiness(prediction)
             
             # Display result
             print("\n" + "="*40)
             print(f"  🎯 Predicted Happiness Score: {prediction:.2f}")
-            print(f"  📊 Category: {category}")
             print("="*40)
             
             # Fun feedback
@@ -703,9 +640,6 @@ def main():
         plot_feature_importance(model, list(X.columns))
         plot_actual_vs_predicted(y_test, y_pred, metrics['test_r2'])
         plot_residuals(y_test, y_pred)
-        
-        # Step 8: Classification analysis
-        generate_classification_report(y_test, y_pred)
         
         # Step 9: Interactive prediction (optional)
         print("\n" + "="*60)
